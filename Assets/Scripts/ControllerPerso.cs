@@ -47,7 +47,7 @@ public class ControllerPersonnage : MonoBehaviour
 
 
         //Commande de saut
-        if (Input.GetKeyDown("w") && Physics2D.OverlapCircle(transform.position, 0.5f) && controlsEnabled == true) //quand la touche W est appuyée et qu'on touche au plancher
+        if (Input.GetKeyDown("w") && Physics2D.OverlapCircle(transform.position, 0.5f) && !GetComponent<Animator>().GetBool("saut") && controlsEnabled == true) //quand la touche W est appuyée et qu'on touche au plancher
         {
             vitesseY = vitesseSaut;
             GetComponent<Animator>().SetBool("saut", true);
