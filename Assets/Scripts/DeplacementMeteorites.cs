@@ -12,6 +12,7 @@ public class DeplacementMeteorites : MonoBehaviour
     public float positionDebut;
     public float deplacementAleatoire;
     public GameObject Personnage;
+    public GameObject Generateur;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +23,13 @@ public class DeplacementMeteorites : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         transform.Translate(vitesseRandomX, vitesseRandomY, 0); //déplace la météorite
         if (transform.position.y <= positionFin) //si la météorite sort de la scène
         {
             Invoke("VitesseMeteorite", 0f); //on lui reattribue une autre vitesse
-            transform.position = new Vector2(Random.Range(-deplacementAleatoire, deplacementAleatoire), positionDebut); //on la replace en haut de la scène
+            //transform.position = new Vector2(Random.Range(-deplacementAleatoire, deplacementAleatoire), positionDebut); //on la replace en haut de la scène
+            Generateur.GetComponent<GenererMeteorites>().numMeteorites--; //on descend le compte de météorites actives de 1
+            Destroy(gameObject);    //on détruit le clone
         }
     }
     void OnCollisionEnter2D(Collision2D collision)

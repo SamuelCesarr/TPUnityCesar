@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ScriptIntro.cs" />
     <Compile Include="Assets\Scripts\DeplacementCoeur.cs" />
+    <Compile Include="Assets\Scripts\GenererMeteorites.cs" />
     <Compile Include="Assets\Scripts\DeplacementMeteorites.cs" />
     <Compile Include="Assets\Scripts\ControllerPerso.cs" />
   </ItemGroup>

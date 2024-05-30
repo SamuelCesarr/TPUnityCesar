@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
 
 public class ControllerPersonnage : MonoBehaviour
 {
@@ -18,11 +19,17 @@ public class ControllerPersonnage : MonoBehaviour
     public int pointage = 0;
     public GameObject objetCoeur;
     public AudioClip sonCoeur;
+    public GameObject objetPack;
+    public int nbVies = 3;
+    public TMP_Text viesTexte;
+    public GameObject Generateur;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
+        viesTexte.text = "Vies: " + nbVies.ToString(); //on affiche le nombre de vies restantes
 
     }
     // Update is called once per frame
@@ -83,26 +90,45 @@ public class ControllerPersonnage : MonoBehaviour
         }
 
         //Animation de mort
-        if (collision.gameObject.tag == "Meteorite") //Quand le personnage touche l'objet taggé
+        if (collision.gameObject.tag == "Meteorite" && nbVies == 1) //Quand le personnage touche l'objet taggé et qu'il lui reste une seule vie
         {
+            nbVies--;   //on décrémente le nombre de vies
+            viesTexte.text = "Vies: " + nbVies.ToString(); //on affiche le nombre de vies restantes
             GetComponent<Animator>().SetBool("mort", true); //on active la mort
             GetComponent<AudioSource>().PlayOneShot(sonMort, 1f); //on joue le son de mort
             controlsEnabled = false; //on désactive les contrôles du personnage
             Invoke("RelancerJeu", 2f);
+        }
+        else if (collision.gameObject.tag == "Meteorite" && nbVies > 1) //quand le personnage se fait frappé et qu'il lui reste plus qu'une vie
+        {
+            nbVies--; //on décrémente le nombre de vies
+            viesTexte.text = "Vies: " + nbVies.ToString(); //on affiche le nombre de vies restantes
         }
         else if (collision.gameObject.name == "Coeur") //Quand le personnage touche un coeur
         {
             pointage++; //on augmente le pointage de 1
             collision.gameObject.SetActive(false); //on désactive le coeur
             GetComponent<AudioSource>().PlayOneShot(sonCoeur, 2f); //on joue le son du coeur
-            
+
             Invoke("ActiveCoeur", 1f);
 
             pointageTexte.text = "Pointage: " + pointage.ToString(); //on affiche le pointage
+
+            Generateur.GetComponent<GenererMeteorites>().maxMeteorites = (int)(4 + Math.Floor((double)pointage / 5)); //oour chaque 5 points obtenus on incrémente le nombre maximal de météorites de 1
+        }
+        else if (collision.gameObject.name == "PackVie")
+        {
+            collision.gameObject.SetActive(false); //on désactive le pack de vie
+            Invoke("ActivePack", 10f); //on le fait réapparaitre après 10 secondes
+
+            if (nbVies < 3)
+            {
+                nbVies++;
+                viesTexte.text = "Vies: " + nbVies.ToString(); //on affiche le nombre de vies restantes
+            }
         }
     }
-
-    void RelancerJeu()
+        void RelancerJeu()
     {
         SceneManager.LoadScene(1); //on relance la première scène d'introduction
     }
@@ -110,5 +136,8 @@ public class ControllerPersonnage : MonoBehaviour
     {
         objetCoeur.SetActive(true); //on réactive le coeur
     }
-
+    void ActivePack()
+    {
+        objetPack.SetActive(true); //on réactive le pack de vie
+    }
 }
